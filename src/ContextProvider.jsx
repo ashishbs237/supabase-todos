@@ -1,20 +1,30 @@
 import React, { createContext, useEffect, useState } from "react";
 
-// You can improve typing here if using TypeScript
 export const AppContext = createContext(null);
 
 const ContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user")) || {};
-    setUser(user);
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) setUser(storedUser);
+    } catch (e) {
+      console.error("Failed to parse stored user:", e);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user !== null) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
   }, [user]);
+
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ user, setUser, loading }}>
       {children}
     </AppContext.Provider>
   );

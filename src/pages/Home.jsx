@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
+import { AppContext } from "../ContextProvider";
 
 function Home() {
+  const { user } = useContext(AppContext);
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
@@ -21,7 +23,9 @@ function Home() {
   async function addTodo(e) {
     e.preventDefault();
     if (!newTodo.trim()) return;
-    const { error } = await supabase.from("todos").insert([{ title: newTodo }]);
+    const { error } = await supabase
+      .from("todos")
+      .insert([{ title: newTodo, user_id: user.id }]);
     if (error) console.error(error);
     else {
       setNewTodo("");
