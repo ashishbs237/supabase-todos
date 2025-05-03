@@ -23,8 +23,13 @@ const ContextProvider = ({ children }) => {
     }
   }, [user]);
 
+  const logoutUser = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
+
   return (
-    <AppContext.Provider value={{ user, setUser, loading }}>
+    <AppContext.Provider value={{ user, setUser, loading, logoutUser }}>
       {children}
     </AppContext.Provider>
   );
